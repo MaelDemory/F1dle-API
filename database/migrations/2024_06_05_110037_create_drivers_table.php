@@ -21,11 +21,11 @@ return new class extends Migration
             $table->integer('win');
             $table->integer('pole');
             $table->integer('podium');
-            $table->integer('year_arrival');
+            $table->integer('first_entry');
             $table->integer('driver_number');
             $table->integer('fastest_laps');
             $table->float('career_points');
-            $table->integer('number_of_races');
+            $table->integer('entries');
             $table->integer('world_championship');
             $table->timestamps();
         });
