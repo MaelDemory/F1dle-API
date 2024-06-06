@@ -51,4 +51,12 @@ class DriverController extends Controller
     {
         //
     }
+
+    public function getRandomDriver(): \Illuminate\Http\JsonResponse
+    {
+        $drivers = Driver::all();
+        $driver = $drivers->random();
+
+        return response()->json($driver);
+    }
 }
