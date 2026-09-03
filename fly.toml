@@ -1,0 +1,61 @@
+# F1dle — Laravel API
+#
+# Private app: after the first deploy its public IPs are released and a private
+# Flycast address is allocated, so it is reachable only from inside the
+# organisation, at f1dle-api-md.flycast:80. The frontend proxies /api/ to it, which
+# also means browser requests are same-origin and CORS never applies.
+#
+# Deploy from this directory:  fly deploy
+# Required secrets:            APP_KEY, DB_PASSWORD
+
+app = "f1dle-api-md"
+primary_region = "cdg"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  APP_NAME = "F1dle"
+  APP_ENV = "production"
+  APP_DEBUG = "false"
+  LOG_LEVEL = "warning"
+
+  DB_CONNECTION = "mysql"
+  DB_HOST = "f1dle-db-md.internal"
+  DB_PORT = "3306"
+  DB_DATABASE = "f1dle"
+  DB_USERNAME = "f1dle"
+
+  # No Redis or database queue in this deployment: the API is read-only for
+  # clients, and seeding runs as a one-off command rather than a job.
+  CACHE_STORE = "file"
+  SESSION_DRIVER = "file"
+  QUEUE_CONNECTION = "sync"
+
+  APP_URL = "https://f1dle-md.fly.dev"
+  FRONTEND_URL = "https://f1dle-md.fly.dev"
+
+[http_service]
+  internal_port = 80
+  # Traffic arrives from the frontend over the private network, where TLS is not
+  # terminated. Forcing HTTPS here would redirect-loop that internal hop.
+  force_https = false
+  # Kept always-on deliberately. Fly's autostop reacts to HTTP traffic only, so a
+  # stopped machine would (a) add cold-start latency behind the frontend's
+  # proxy_pass and (b) kill the ~15 min 'app:seed' run dead, since seeding
+  # generates no inbound requests. One small always-on machine avoids both.
+  auto_stop_machines = "off"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [[http_service.checks]]
+    grace_period = "30s"
+    interval = "15s"
+    timeout = "5s"
+    method = "GET"
+    # Declared by bootstrap/app.php via withRouting(health: '/up').
+    path = "/up"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
