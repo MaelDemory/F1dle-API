@@ -61,11 +61,15 @@ Data comes from [the Jolpica/Ergast API](https://api.jolpi.ca/ergast/f1).
 
 ## Full documentation
 
-The architecture, the Fly.io deployment procedure and the database schema are
-documented one level up, in the workspace that holds this repository alongside
-the frontend's, next to `docker-compose.yml`:
+Project-wide documentation lives in the frontend repository, under
+[`docs/`](https://github.com/MaelDemory/F1dle/tree/main/docs) — it covers both
+repositories, and is written in French:
 
-- `README.md` — features, architecture, API, seeding, deployment
-- `DEPLOY.md` — Fly.io procedure, secrets, known pitfalls
+- **[PROJECT.md](https://github.com/MaelDemory/F1dle/blob/main/docs/PROJECT.md)**
+  — features, architecture, API, seeding, deployment
+- **[DEPLOY.md](https://github.com/MaelDemory/F1dle/blob/main/docs/DEPLOY.md)**
+  — Fly.io procedure, secrets, known pitfalls
 
-Those files are not versioned in this repository.
+That repository also carries the `docker-compose.yml` that brings up the whole
+stack, and it expects this repository checked out as a sibling directory named
+`F1dle-API`.
