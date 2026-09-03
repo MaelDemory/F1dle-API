@@ -350,5 +350,7 @@ class DriverSeeder extends Seeder
                 "world_championship"=>0
             ]
         ]);
+
+        $this->call(TeamSeeder::class);
     }
 }
